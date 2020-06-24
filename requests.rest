@@ -1,0 +1,25 @@
+
+
+### login USER
+POST http://localhost/api/user/login
+Content-Type: application/json
+
+{
+    "username":"aaa",
+    "password":"aaa"
+}
+###
+
+
+
+
+### Register USER
+POST http://localhost/api/user/register
+Content-Type: application/json
+
+{
+    "username":"aaaF",
+    "password":"aaa"
+}
+###
+
