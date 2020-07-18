@@ -27,49 +27,42 @@ const Div2 = styled.div`
 
 const Navbar = () => {
 
-
-    const [show, setShow] = useState(true);
+    const [refresh, setRefresh] = useState(0);
+    const show = useRef(true)
     const [isWrap, setIsWrap] = useState(false);
     const barRef = useRef();
     const height = useRef(0);
 
-
-
-
     useEffect(function () {
 
-        height.current = barRef.current.offsetHeight;
-        setIsWrap(true);
-   
-// access  show   here may not be accurte, use ref instead of state if really need to.
-// access show via setshow( pre )
-        let resizer = new ResizeObserver(function (e) {
 
-            barRef.current.offsetHeight > height.current
-                ? (function () {
-                 //   console.log(show);
-                    setShow(pre => {
-                 //       console.log(pre);
-                        return false
-                    })
-                }())
-                : (function () {
-                  //   console.log(show);
-                    setShow(pre => {
-                  //      console.log(pre);
-                        return true
-                    })
-                }())
-
-
-        }); resizer.observe(barRef.current);
-
-
-        return function () {
-            resizer.disconnect();
-            return resizer;
+        if (!isWrap) {
+            height.current = barRef.current.offsetHeight;
+            setIsWrap(true);
+        }
+        else {
+            if (barRef.current.offsetHeight > height.current) {
+                show.current = false;
+                setRefresh(pre => pre + 1)
+            }
         }
 
+    }, [isWrap]);
+
+    useEffect(function () {
+        let resizer = new ResizeObserver(function (e) {
+
+            if (show.current && barRef.current.offsetHeight > height.current) {
+                show.current = false;
+                setRefresh(pre => pre + 1);
+
+            }
+            else if (!show.current && barRef.current.offsetHeight <= height.current) {
+                show.current = true;
+                setRefresh(pre => pre + 1)
+            }
+        });
+        resizer.observe(barRef.current);
     }, [])
 
 
@@ -77,10 +70,7 @@ const Navbar = () => {
 
     return (
         <>
-<div>{show+""}</div>
-
-
-            {show
+            {show.current
                 ? <Div >
                     <Menu title="Home">
                         <a>aaa</a>
@@ -112,16 +102,16 @@ const Navbar = () => {
                 :
                 <Div2>
                     <Menu title="shrinked">
-                        <a>aaa aaaa aaaa</a>
-                        <a>bbb</a>
-                        <a>ccc</a>
-                        <a>ddd</a>
-                        <a>eee</a>
-                        <a>fff</a>
+                       <a>aaa aaaa aaaa</a>
+                       <a>bbb</a>
+                       <a>ccc</a>
+                       <a>ddd</a>
+                       <a>eee</a>
+                       <a>fff</a>
                     </Menu>
                 </Div2>}
 
-            <Div isWrap={isWrap} ref={barRef} style={{ zIndex: "-100", width: "100%", position: "fixed", opacity: "0.8" }}>
+            <Div isWrap={isWrap} ref={barRef} style={{ position: "fixed", opacity: "0" }}>
                 <Menu title="Home">
                     <a>aaa</a>
                     <a>bbb</a>
@@ -138,13 +128,13 @@ const Navbar = () => {
                     <a>iii</a>
                 </Menu>
                 <Menu title="Profile">
-                    <a>jjj</a>
-                    <a>kkk</a>
-                    <a>lll</a>
+                        <a>jjj</a>
+                        <a>kkk</a>
+                        <a>lll</a>
                 </Menu>
             </Div>
-
-        </>
+        
+   </>
     );
 }
 

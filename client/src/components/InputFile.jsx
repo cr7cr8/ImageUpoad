@@ -94,13 +94,14 @@ const InputFile = () => {
 
     const [pic, setPic] = useState(null);
 
-    const [fileList, setFileList] = useState([]);
+    const [fileList, setFileList] = useState();
 
     const [percentage, setPercentage] = useState("Upload");
     const [progress, setProgress] = useState("0%");
 
     useEffect(function () {
 
+      
         axios.get(`${url}/picture/list`)
             .then(({ data }) => {
                 //  console.log(data);
@@ -137,9 +138,11 @@ const InputFile = () => {
 
                 boxSizing: "border-box",
                 width: "100%",
+              
           //      height: "100vh"
             }}
         >
+         
 
             <input type="file" style={{ marginBottom: "10px", width: "100%", display: "none" }} ref={inputRef}
 
@@ -187,7 +190,7 @@ const InputFile = () => {
 
             <div style={{ margin: "10px", backgroundColor: "pink" }}> </div>
 
-            {fileList.map(function (item, index) {
+            {fileList&&fileList.map(function (item, index) {
 
                 return (
                     <div key={index} style={{ display: "flex", width: "30%", justifyContent: "space-between", alignItems: "flex-end" }}>

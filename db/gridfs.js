@@ -8,8 +8,7 @@ const collectionName = "file_uploads";
 const fs = require("fs");
 const axios = require("axios");
 const FormData = require('form-data');
-const concat = require("concat-stream");
-const { Readable } = require('stream');
+
 
 function createFileModel({ connDB, collectionName }) {
     const fileSchema = new mongoose.Schema({
@@ -169,6 +168,7 @@ function uploadSmall(req, res, next) {
                                         {
                                             chunkSizeBytes: 255 * 1024,
                                             metadata: { bigPicId: pic._id, ...JSON.parse(req.body.obj) },
+                                            contentType:pic.contentType,
                                         }
 
                                     )
