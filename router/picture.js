@@ -20,7 +20,7 @@ router.get("/downloadsmall/:id",PicUpload.downloadSmall.bind(PicUpload))
 
 router.get("/download/:id", PicUpload.download.bind(PicUpload))
 
-router.get("/listallsmall",PicUpload.listAllSmallLink.bind(PicUpload))
+router.get("/listsmall",PicUpload.listAllSmallLink.bind(PicUpload))
 
 
 module.exports = router
