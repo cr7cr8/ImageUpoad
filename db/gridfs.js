@@ -95,6 +95,10 @@ function listAllSmallLink(req, res, next) {
                 })
                
         }
+        else{
+            res.json([]);
+        }
+        
 
     })
   
