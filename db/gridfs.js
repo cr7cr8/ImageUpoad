@@ -91,7 +91,7 @@ function listAllSmallLink(req, res, next) {
                     res.json(array)
                 })
                 .catch(err=>{
-                    res.status(500).json("error in geting small pic list array",err)
+                    res.status(500).json("error in geting small pic list array")
                 })
                
         }
