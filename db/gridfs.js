@@ -25,17 +25,17 @@ function createFileModel({ connDB, collectionName }) {
     };
     fileSchema.statics = {
 
-     
 
-        uploadSmall: function (req, res,next) {
-            return uploadSmall.call(this, req, res,next)
+
+        uploadSmall: function (req, res, next) {
+            return uploadSmall.call(this, req, res, next)
         },
 
         download: function (req, res) {
             return gridFsDownload.call(this, req, res)
         },
-        downloadSmall:function(req,res,next){
-            return gridFsDownloadSmall.call(this,req,res,next)
+        downloadSmall: function (req, res, next) {
+            return gridFsDownloadSmall.call(this, req, res, next)
         },
         delete: function (req, res, next) {
             // return console.log("start delete", req.params.id);
@@ -53,7 +53,9 @@ function createFileModel({ connDB, collectionName }) {
             return gridFsFind.call(this, req, res, next)
 
         },
-     
+        listAllSmallLink: function (req, res, next) {
+            return listAllSmallLink.call(this, req, res, next)
+        },
         getDocIDs: function (req, res, next) {
 
             if (req.files['file']) {
@@ -67,6 +69,35 @@ function createFileModel({ connDB, collectionName }) {
 
     };
     return connDB.model(collectionName, fileSchema)
+}
+
+
+function listAllSmallLink(req, res, next) {
+    const arr = [];
+    const cursor = this.db.db.collection("small_" + this.schema.options.collection + ".files").find()
+    //.map(function(smallPic){    console.log(smallPic); return smallPic._id });
+    cursor.hasNext().then(result => {
+
+        if (result) {
+            cursor.map(
+                function (smallPic) {
+                    console.log(smallPic.metadata.bigPicId);
+                    arr.push(smallPic.metadata.bigPicId)
+                    return smallPic.metadata.bigPicId;
+                })
+                .toArray()
+                .then(array=>{
+                    console.log(array)
+                    res.json(array)
+                })
+                .catch(err=>{
+                    res.status(500).json("error in geting small pic list array",err)
+                })
+               
+        }
+
+    })
+  
 }
 
 
@@ -168,7 +199,7 @@ function uploadSmall(req, res, next) {
                                         {
                                             chunkSizeBytes: 255 * 1024,
                                             metadata: { bigPicId: pic._id, ...JSON.parse(req.body.obj) },
-                                            contentType:pic.contentType,
+                                            contentType: pic.contentType,
                                         }
 
                                     )
@@ -178,7 +209,7 @@ function uploadSmall(req, res, next) {
                                     gfsws.end(function () {
 
                                         console.log("small " + pic.filename + " is done");
-                                    
+
 
                                         next();
 
@@ -205,16 +236,16 @@ function uploadSmall(req, res, next) {
 }
 
 
-function gridFsDownloadSmall(req,res,next){
+function gridFsDownloadSmall(req, res, next) {
     var gfs = new mongoose.mongo.GridFSBucket(this.db.db, {
         chunkSizeBytes: 255 * 1024,
-        bucketName: "small_"+this.schema.options.collection,
+        bucketName: "small_" + this.schema.options.collection,
     });
     const arr = [];
     const cursor = gfs.find({ 'metadata.bigPicId': mongoose.Types.ObjectId(req.params.id), /* "metadata.owner": req.user.username */ }, { limit: 1 })
 
     cursor.hasNext().then(result => {
-    
+
         if (result) {
 
             cursor.forEach(pic => {
@@ -227,9 +258,9 @@ function gridFsDownloadSmall(req,res,next){
                 res.header("access-control-expose-headers", "file-name")
 
                 res.header("content-length", pic.length)
-         
+
                 gfsrs.on("data", function (data) {
-                
+
                     res.write(data);
                 })
                 gfsrs.on("close", function () {
@@ -241,7 +272,7 @@ function gridFsDownloadSmall(req,res,next){
         else {
             res.status(400).json("no file found")
         }
-    
+
     })
 
 }
@@ -310,7 +341,7 @@ function gridFsDelete(req, res) {
 
     var gfs2 = new mongoose.mongo.GridFSBucket(this.db.db, {
         chunkSizeBytes: 255 * 1024,
-        bucketName: "small_"+this.schema.options.collection,
+        bucketName: "small_" + this.schema.options.collection,
     });
 
     // return gfs.find({ 'metadata.id': Number(req.params.id), "metadata.owner": req.user.username }, { limit: 1 }).forEach(pic => {
@@ -328,7 +359,7 @@ function gridFsDelete(req, res) {
                     else {
                         console.log("file deleted");
 
-                     //   res.send(pic._id)
+                        //   res.send(pic._id)
                     }
 
                 })
@@ -353,7 +384,7 @@ function gridFsDelete(req, res) {
                     else {
                         console.log("file deleted");
 
-                     //   res.send(pic._id)
+                        //   res.send(pic._id)
                     }
 
                 })
@@ -361,7 +392,7 @@ function gridFsDelete(req, res) {
 
         }
         else {
-           // return res.send(req.params.id + " is not in database")
+            // return res.send(req.params.id + " is not in database")
         }
 
 
@@ -454,7 +485,7 @@ function getDocIDs_(req, res, next) {
 
 
 module.exports = {
-  //  FileUpload: createFileModel({ connDB, collectionName }),
+    //  FileUpload: createFileModel({ connDB, collectionName }),
     PicUpload: createFileModel({ connDB: connDB, collectionName: "pic_uploads" }),
-  
+
 }

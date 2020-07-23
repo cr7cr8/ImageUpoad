@@ -13,9 +13,14 @@ router.post("/upload", PicUpload.upload.bind(PicUpload), PicUpload.uploadSmall.b
 router.get("/delete/:id", PicUpload.delete.bind(PicUpload))
 
 router.get("/list", PicUpload.list.bind(PicUpload))
+
+
+
 router.get("/downloadsmall/:id",PicUpload.downloadSmall.bind(PicUpload))
 
-
 router.get("/download/:id", PicUpload.download.bind(PicUpload))
+
+router.get("/listallsmall",PicUpload.listAllSmallLink.bind(PicUpload))
+
 
 module.exports = router

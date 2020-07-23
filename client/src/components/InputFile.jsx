@@ -196,6 +196,7 @@ const InputFile = () => {
                     <div key={index} style={{ display: "flex", width: "30%", justifyContent: "space-between", alignItems: "flex-end" }}>
                         <a
                             target="_blank"
+                            // download="dddd.jpg" will not rename the download pic to dddd.jpg, because the href is a url,not base64 byte string
                             style={{ margin: "10px",fontSize:"2rem" }}
                             href={`${url}/picture/download/${item.fileId}`}
                         >
