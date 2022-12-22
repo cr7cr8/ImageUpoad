@@ -10,7 +10,7 @@
     "form-data": "^3.0.0",
     "images": "^3.2.2",
     "jimp": "^0.13.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.9.9",
     "multer": "^1.4.2",
     "multer-gridfs-storage": "^4.1.0"
